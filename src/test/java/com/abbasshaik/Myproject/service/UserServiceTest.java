@@ -1,20 +1,38 @@
 package com.abbasshaik.Myproject.service;
 
+import com.abbasshaik.Myproject.entities.User;
 import com.abbasshaik.Myproject.repository.UserRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-public class UserServiceTest {
-    @Autowired
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
+
+    @Mock
     private UserRepository userRepository;
+
+    @InjectMocks
+    private UserService userService; // your service class
+
     @Test
-    public void testfindByUserName(){
-        assertNotNull(userRepository.findByUsername("Pandey"));
+    void testfindByUserName() {
+        User mockUser = User.builder()
+                .username("Pandey")
+                .password("123")
+                .build();
+
+        when(userRepository.findByUsername("Pandey"))
+                .thenReturn(mockUser);
+
+        User result = userService.findByUsername("Pandey");
+
+        assertNotNull(result);
+        assertEquals("Pandey", result.getUsername());
     }
 }
